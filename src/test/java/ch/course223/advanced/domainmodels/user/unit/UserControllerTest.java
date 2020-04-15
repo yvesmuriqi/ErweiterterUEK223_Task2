@@ -125,14 +125,15 @@ public class UserControllerTest {
         verify(userService, times(1)).findAll();
     }
 
-    @Test
+       @Test
     @WithMockUser
     public void create_deliverUserDTOToCreate_returnCreatedUserDTO() throws Exception {
         String userDTOAsJsonString = new ObjectMapper().writeValueAsString(userDTOToBeTestedAgainst);
 
+        UUID uuid = UUID.randomUUID();
+
         given(userService.save(any(User.class))).will(invocation -> {
             if ("non-existent".equals(invocation.getArgument(0))) throw new BadRequestException();
-            UUID uuid = UUID.randomUUID();
             User user = invocation.getArgument(0);
             return user.setId(uuid.toString());
         });
@@ -143,6 +144,7 @@ public class UserControllerTest {
                         .content(userDTOAsJsonString)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(uuid.toString()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.firstName").value(userDTOToBeTestedAgainst.getFirstName()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.lastName").value(userDTOToBeTestedAgainst.getLastName()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(userDTOToBeTestedAgainst.getEmail()))
