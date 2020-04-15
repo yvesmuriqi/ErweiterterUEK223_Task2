@@ -126,7 +126,12 @@ public class UserControllerTest {
         verify(userService, times(1)).findAll();
     }
 
+<<<<<<< HEAD
     /*@Test
+=======
+    /*
+       @Test
+>>>>>>> ad784ab70df8c2a6dc1499d6c160a81fd4124d65
     @WithMockUser
     public void create_deliverUserDTOToCreate_returnCreatedUserDTO() throws Exception {
         String userDTOAsJsonString = new ObjectMapper().writeValueAsString(userDTOToBeTestedAgainst);
@@ -159,7 +164,46 @@ public class UserControllerTest {
         Assertions.assertThat(userArgumentCaptor.getValue().getFirstName().equals(userDTOToBeTestedAgainst.getEmail()));
         Assertions.assertThat(userArgumentCaptor.getValue().getRoles().stream().map(Role::getName).toArray()).containsExactlyInAnyOrder(userDTOToBeTestedAgainst.getRoles().stream().map(RoleDTO::getName).toArray());
         Assertions.assertThat(userArgumentCaptor.getValue().getRoles().stream().map(Role::getAuthorities).flatMap(Collection::stream).map(Authority::getName).toArray()).containsExactlyInAnyOrder(userDTOToBeTestedAgainst.getRoles().stream().map(RoleDTO::getAuthorities).flatMap(Collection::stream).map(AuthorityDTO::getName).toArray());
+<<<<<<< HEAD
     }*/
+=======
+    }
+*/
+    @Test
+    @WithMockUser
+    public void updateUserById_requestUserDTOToBeUpdated_returnUpdatedUserDTO() throws Exception {
+        String userDTOAsJsonString = new ObjectMapper().writeValueAsString(userDTOToBeTestedAgainst);
+
+        given(userService.updateById(anyString(), any(User.class))).will(invocation -> {
+            if ("non-existent".equals(invocation.getArgument(0)) || "non-existent".equals(invocation.getArgument(1))) throw new BadRequestException();
+            return ((User) invocation.getArgument(1)).setId(invocation.getArgument(0));
+        });
+
+        UUID uuid = UUID.randomUUID();
+
+        mvc.perform(
+                MockMvcRequestBuilders.put("/users/{id}", uuid.toString())
+                        .content(userDTOAsJsonString)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.firstName").value(userDTOToBeTestedAgainst.getFirstName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.lastName").value(userDTOToBeTestedAgainst.getLastName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(userDTOToBeTestedAgainst.getEmail()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.roles[*].name").value(Matchers.containsInAnyOrder(userDTOToBeTestedAgainst.getRoles().stream().map(RoleDTO::getName).toArray())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.roles[*].authorities[*].name").value(Matchers.containsInAnyOrder(userDTOToBeTestedAgainst.getRoles().stream().map(RoleDTO::getAuthorities).flatMap(Collection::stream).map(AuthorityDTO::getName).toArray())));
+
+        ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
+        verify(userService, times(1)).updateById(stringArgumentCaptor.capture(), userArgumentCaptor.capture());
+        Assertions.assertThat(stringArgumentCaptor.getValue().equals(userToBeTestedAgainst.getId()));
+        Assertions.assertThat(userArgumentCaptor.getValue().getFirstName().equals(userDTOToBeTestedAgainst.getFirstName()));
+        Assertions.assertThat(userArgumentCaptor.getValue().getFirstName().equals(userDTOToBeTestedAgainst.getLastName()));
+        Assertions.assertThat(userArgumentCaptor.getValue().getFirstName().equals(userDTOToBeTestedAgainst.getEmail()));
+        Assertions.assertThat(userArgumentCaptor.getValue().getRoles().stream().map(Role::getName).toArray()).containsExactlyInAnyOrder(userDTOToBeTestedAgainst.getRoles().stream().map(RoleDTO::getName).toArray());
+        Assertions.assertThat(userArgumentCaptor.getValue().getRoles().stream().map(Role::getAuthorities).flatMap(Collection::stream).map(Authority::getName).toArray()).containsExactlyInAnyOrder(userDTOToBeTestedAgainst.getRoles().stream().map(RoleDTO::getAuthorities).flatMap(Collection::stream).map(AuthorityDTO::getName).toArray());
+    }
+>>>>>>> ad784ab70df8c2a6dc1499d6c160a81fd4124d65
 
     @Test
     @WithMockUser
