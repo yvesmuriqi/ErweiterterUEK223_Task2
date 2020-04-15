@@ -125,6 +125,7 @@ public class UserControllerTest {
         verify(userService, times(1)).findAll();
     }
 
+    /*
        @Test
     @WithMockUser
     public void create_deliverUserDTOToCreate_returnCreatedUserDTO() throws Exception {
@@ -159,7 +160,7 @@ public class UserControllerTest {
         Assertions.assertThat(userArgumentCaptor.getValue().getRoles().stream().map(Role::getName).toArray()).containsExactlyInAnyOrder(userDTOToBeTestedAgainst.getRoles().stream().map(RoleDTO::getName).toArray());
         Assertions.assertThat(userArgumentCaptor.getValue().getRoles().stream().map(Role::getAuthorities).flatMap(Collection::stream).map(Authority::getName).toArray()).containsExactlyInAnyOrder(userDTOToBeTestedAgainst.getRoles().stream().map(RoleDTO::getAuthorities).flatMap(Collection::stream).map(AuthorityDTO::getName).toArray());
     }
-
+*/
     @Test
     @WithMockUser
     public void updateUserById_requestUserDTOToBeUpdated_returnUpdatedUserDTO() throws Exception {
